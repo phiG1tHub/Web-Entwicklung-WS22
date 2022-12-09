@@ -1,0 +1,37 @@
+{
+  "name": "a3-npm-als-build-tool",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clean:dist": "rimraf dist",
+    "clean": "npm run clean:dist && rimraf node_modules",
+    "lint": "semistandard --verbose ./**/*.js | snazyy",
+    "format": "semistandard --fix --verbose ./**/*.js",
+    "html": "mkdirp dist && cp src/index.html dist/index.html",
+    "css": "mkdirp dist && lessc src/styles/style.less dist/style.css",
+    "js": "mkdirp dist && esbuild src/js/Main.mjs --log-level=warning --bundle --outfile=dist/bundle.js",
+    "js:min":  "terser dist/bundle.js --compress --mangle --comments=false -o dist/bundle.js",
+    "css:min":"lessc --clean-css dist/style.css dist/style.css" ,
+    "debug": "npm run html && npm run css && npm run js",
+    "build": "npm run debug && run npm",
+    "start": "node server/server.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.15.15",
+    "http-server": "^14.1.1",
+    "less": "^4.1.3",
+    "less-plugin-clean-css": "^1.5.1",
+    "mkdirp": "^1.0.4",
+    "semistandard": "^16.0.1",
+    "snazzy": "^9.0.0",
+    "terser": "^5.16.0"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "rimraf": "^3.0.2"
+  }
+}
