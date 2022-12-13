@@ -10,17 +10,17 @@ const server = express();
 server.use(express.static(path.join(dirname ,'../dist/')));
 
 server.get("/", (request, response) => {
-    response.sendFile();
+    response.sendFile(path.join(dirname,'../dist/index.html'));
 });
 
 // grabbing the port from the commandline or setting 8080 as default
 
 let port = process.argv.slice(2)[0];
 
-if (port == null) {
+if ( port == null ) {
     port = 8080;
 } else {
-    port = parseInt(port);
+    port = parseInt( port );
 }
 
 // listening for requests
