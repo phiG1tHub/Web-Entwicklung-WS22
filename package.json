@@ -12,11 +12,11 @@
     "html": "mkdirp dist && cpy --flat webapp/src/index.html dist",
     "css": "mkdirp dist && lessc webapp/src/styles/style.less dist/public/style.css",
     "js": "mkdirp dist && esbuild webapp/src/js/main.js --log-level=warning --bundle --outfile=dist/public/bundle.js",
-    "js:min": "terser dist/public/bundle.js --compress --mangle --comments=false -o bundle.js",
-    "css:min": "lessc --clean-css dist/public/style.css dist/style.css",
-    "predebug":"npm run lint",
+    "js:min": "terser dist/public/bundle.js --compress --mangle --comments=false -o dist/public/bundle.js",
+    "css:min": "lessc --clean-css dist/public/style.css dist/public/style.css",
+    "predebug": "npm run lint",
     "debug": "npm run html && npm run css && npm run js",
-    "prebuild" : "npm run debug",
+    "prebuild": "npm run debug",
     "build": "npm run debug && npm run js:min && npm run css:min",
     "start": "node server/server.mjs",
     "watch": "nodemon server/server.mjs"
@@ -37,6 +37,7 @@
     "terser": "^5.16.0"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uikit": "^3.15.18"
   }
 }
