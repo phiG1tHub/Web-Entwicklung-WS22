@@ -1,14 +1,14 @@
 {
-  "name": "a3-npm-als-build-tool",
+  "name": "hausarbeit-web-entwicklung-ws22",
   "version": "1.0.0",
-  "description": "",
+  "description": "Eine Web-Anwendung zur Veranstalltungsplanung",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean:dist": "rimraf dist",
     "clean": "npm run clean:dist && rimraf node_modules",
-    "lint": "semistandard --verbose ./**/*.js | snazzy",
-    "format": "semistandard --fix --verbose ./**/*.js",
+    "lint": "semistandard --verbose ./**/*.mjs | snazzy",
+    "format": "semistandard --fix --verbose ./**/*.mjs",
     "html": "mkdirp dist && cpy --flat webapp/src/index.html dist",
     "css": "mkdirp dist && lessc webapp/src/styles/style.less dist/public/style.css",
     "js": "mkdirp dist && esbuild webapp/src/js/main.js --log-level=warning --bundle --outfile=dist/public/bundle.js",
@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "express": "^4.18.2",
+    "npm": "^9.2.0",
     "uikit": "^3.15.18"
   }
 }
