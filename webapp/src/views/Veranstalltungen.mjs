@@ -11,7 +11,7 @@ export default class extends AbstractView {
     // uikit.showModal();
     return `
 <table class="uk-table">
-    <caption>Veranstalltungen</caption>
+    <caption>Veranstaltung</caption>
     <thead>
         <tr>
             <th>Name</th>
