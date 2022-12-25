@@ -7,17 +7,17 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "clean:dist": "rimraf dist",
     "clean": "npm run clean:dist && rimraf node_modules",
-    "lint": "semistandard --verbose ./**/*.js | snazzy",
-    "format": "semistandard --fix --verbose ./**/*.js",
+    "lint": "semistandard --verbose ./**/*.mjs | snazzy",
+    "format": "semistandard --fix --verbose ./**/*.mjs | snazzy",
     "html": "mkdirp dist && cpy --flat webapp/src/index.html dist",
     "css": "mkdirp dist && lessc webapp/src/styles/style.less dist/public/style.css",
-    "js": "mkdirp dist && esbuild webapp/src/js/main.js --log-level=warning --bundle --outfile=dist/public/bundle.js",
-    "js:min": "terser dist/public/bundle.js --compress --mangle --comments=false -o bundle.js",
-    "css:min": "lessc --clean-css dist/public/style.css dist/style.css",
-    "predebug":"npm run lint",
+    "js": "mkdirp dist && esbuild webapp/src/js/index.mjs --log-level=warning --bundle --outfile=dist/public/bundle.js",
+    "js:min": "terser dist/public/bundle.js --compress --mangle --comments=false -o dist/public/bundle.js",
+    "css:min": "lessc --clean-css dist/public/style.css dist/public/style.css",
+    "predebug": "npm run lint",
     "debug": "npm run html && npm run css && npm run js",
-    "prebuild" : "npm run debug",
-    "build": "npm run debug && npm run js:min && npm run css:min",
+    "prebuild": "npm run debug",
+    "build": "npm run js:min && npm run css:min",
     "start": "node server/server.mjs",
     "watch": "nodemon server/server.mjs"
   },
@@ -26,6 +26,7 @@
   "devDependencies": {
     "cpy-cli": "^4.2.0",
     "esbuild": "^0.15.15",
+    "esbuild-plugin-svgr": "^1.0.1",
     "http-server": "^14.1.1",
     "less": "^4.1.3",
     "less-plugin-clean-css": "^1.5.1",
@@ -37,6 +38,7 @@
     "terser": "^5.16.0"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "uikit": "^3.15.19"
   }
 }
