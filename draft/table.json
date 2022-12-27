@@ -1,5 +1,6 @@
 {
-  "name": "",
+  "id": "0",
+  "seat_count": "1",
   "seats":["peter","claus"],
-  "opposite": ["optional"]
+  "opposite": ["yes, no"]
 }
