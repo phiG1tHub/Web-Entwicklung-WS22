@@ -1,5 +1,7 @@
 import express from 'express';
 import path from 'path';
+import Guests from './Guests.mjs';
+import Tables from './Tables.mjs';
 
 const dirname = path.dirname(process.argv[1]);
 const host = 'localhost';
@@ -24,17 +26,10 @@ if (port == null) {
 
 // setup RESTful HTTP API
 const BASE_URI = `http://localhost:${port}/api`;
-server.use(bodyParser.json());
-
-const Guests = require("./Guests");
-const Tables = require("./Tables");
-
-
-// listening for requests
-server.listen(port, host, () => { console.log('Server is running on http://' + host + ':' + port); });
+server.use(express.json());
 
 // entrypoint
-server.get("/api/", (request, response) => {
+server.get('/api/', (request, response) => {
   response.json({
     _links: {
       self: { href: `${BASE_URI}` },
@@ -46,9 +41,9 @@ server.get("/api/", (request, response) => {
 });
 
 // guests
-server.get("/api/guests", (request, response) => { 
-  response.json(createGuestListBody ());
-  });
+server.get('/api/guests', (request, response) => {
+  response.json(createGuestListBody());
+});
 
 function createGuestListBody () {
   return {
@@ -71,17 +66,39 @@ function createGuestListBody () {
 }
 
 // table
-server.get("/tables/:id", (request, response) => {
+server.get('/tables/:id', (request, response) => {
   const id = request.params.id;
   if (!Tables.exists(id)) {
     response.sendStatus(404);
-  }
-  else {
+  } else {
     response.json(createTableBody(id));
   }
 });
 
-function createTableResponse (id) {
+function createTableBody (id) {
+  return {
+    table: Table.get(id),
+    _links: {
+      self: {
+        href: `${BASE_URI}/tables/${id}`
+      },
+      update: {
+        method: 'PUT',
+        href: `${BASE_URI}/tables/${id}`
+      },
+      delete: {
+        method: 'DELETE',
+        href: `${BASE_URI}/tables/${id}`
+      },
+      list: {
+        href: `${BASE_URI}/tables`
+      }
+    }
+  };
+}
+
+
+function createTableResponse(id) {
   if (Tables.exists(id)) {
     return {
       table: Tables.get(id),
@@ -91,7 +108,7 @@ function createTableResponse (id) {
         },
         update: {
           method: 'PUT',
-            href: `${BASE_URI}/tables/${id}`
+          href: `${BASE_URI}/tables/${id}`
         },
         list: {
           href: `${BASE_URI}/tables`
@@ -103,38 +120,35 @@ function createTableResponse (id) {
   }
 }
 
-server.put("/tables/:id", (request, response) => {
+server.put('/tables/:id', (request, response) => {
   const id = request.params.id;
   if (!Tables.exists(id)) {
     response.sendStatus(404);
-  }
-  else {
+  } else {
     const updatedTable = request.body;
     Tables.update(id, updatedTable.seat_count, updatedTable.seats, updatedTable.opposite);
-  response.json(createTableBody(id));
+    response.json(createTableBody(id));
   }
 });
 
-server.post("/tables", (request, response) => {
+server.post('/tables', (request, response) => {
   const newTable = request.body;
   if (!(newTable.seat_count && newTable.seats && newTable.opposite)) {
     response.sendStatus(400);
-  }
-  else {
+  } else {
     const id = Tables.create(newTable.seat_count, newTable.seats, newTable.opposite);
-    response.location(`${BASE_URI}/tables/${id}`).status(201)
-      .json(createCustomerBody(id));
+    response.location(`${BASE_URI}/tables/${id}`).status(201).json(createTableBody(id));
   }
 });
 
 // tables
-server.get("/api/tables", (request, response) => { 
-  response.json(createTableListBody ());
-  });
+server.get('/api/tables', (request, response) => {
+  response.json(createTableListBody());
+});
 
 function createTableListBody () {
   return {
-    tables: Table.getAll().map(id => {
+    tables: Tables.getAll().map(id => {
       return {
         name: Tables.get(id).name,
         href: `${BASE_URI}/tables/${id}`
@@ -151,3 +165,6 @@ function createTableListBody () {
     }
   };
 }
+
+// listening for requests
+server.listen(port, host, () => { console.log('Server is running on http://' + host + ':' + port); });
