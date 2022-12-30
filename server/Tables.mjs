@@ -1,9 +1,9 @@
 const tables = {};
 let nextId = 0;
 
-function create (seat_count, seats, opposite) {
+function create (seatCount, seats, opposite) {
   tables[nextId] = ({
-    seat_count: seat_count,
+    seatCount: seatCount,
     seats: seats,
     opposite: opposite,
     active: true
@@ -26,10 +26,10 @@ function get (id) {
   }
 }
 
-function update (id, seat_count, seats, opposite) {
+function update (id, seatCount, seats, opposite) {
   if (exists(id)) {
     const table = tables[id];
-    table.seat_count = seat_count;
+    table.seatCount = seatCount;
     table.seats = seats;
     table.opposite = opposite;
   }
