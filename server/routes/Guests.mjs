@@ -1,6 +1,6 @@
 import Guests from '../Guests.mjs';
 import { BASE_URI } from '../server.mjs';
-const express = require('express');
+import express from 'express';
 
 const router = express.Router();
 
@@ -51,7 +51,7 @@ function createGuestListBody () {
 }
 
 // guest
-router.put('/api/guests/:id', (request, response) => {
+router.put('/:id', (request, response) => {
   const id = request.params.id;
   if (!Guests.exists(id)) {
     response.sendStatus(404);
@@ -63,7 +63,7 @@ router.put('/api/guests/:id', (request, response) => {
   }
 });
 
-router.delete('/api/events/:id', (request, response) => {
+router.delete('/:id', (request, response) => {
   const id = request.params.id;
   if (!Guests.exists(id)) {
     response.sendStatus(404);
@@ -74,11 +74,11 @@ router.delete('/api/events/:id', (request, response) => {
 });
 
 // guests
-router.get('/api/guests', (request, response) => {
+router.get('/', (request, response) => {
   response.json(createGuestListBody());
 });
 
-router.post('/api/guests', (request, response) => {
+router.post('/', (request, response) => {
   const newGuest = request.body;
   if (!(newGuest.name && newGuest.children && newGuest.status)) {
     response.sendStatus(400);
@@ -89,4 +89,4 @@ router.post('/api/guests', (request, response) => {
   }
 });
 
-module.exports = router;
+export default router;

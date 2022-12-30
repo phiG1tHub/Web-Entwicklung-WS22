@@ -1,6 +1,6 @@
 import Tables from '../Tables.mjs';
 import { BASE_URI } from '../server.mjs';
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 function createTableListBody () {
@@ -46,7 +46,7 @@ function createTableResponse (id) {
 }
 
 // table
-router.get('/api/tables/:id', (request, response) => {
+router.get('/:id', (request, response) => {
   const id = request.params.id;
   if (!Tables.exists(id)) {
     response.sendStatus(404);
@@ -55,7 +55,7 @@ router.get('/api/tables/:id', (request, response) => {
   }
 });
 
-router.put('/api/tables/:id', (request, response) => {
+router.put('/:id', (request, response) => {
   const id = request.params.id;
   if (!Tables.exists(id)) {
     response.sendStatus(404);
@@ -67,7 +67,7 @@ router.put('/api/tables/:id', (request, response) => {
 });
 
 // tables
-router.post('/api/tables', (request, response) => {
+router.post('/', (request, response) => {
   const newTable = request.body;
   if (!(newTable.seat_count && newTable.seats && newTable.opposite)) {
     response.sendStatus(400);
@@ -78,8 +78,8 @@ router.post('/api/tables', (request, response) => {
   }
 });
 
-router.get('/api/tables', (request, response) => {
+router.get('/', (request, response) => {
   response.json(createTableListBody());
 });
 
-module.exports = router;
+export default router;

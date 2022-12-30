@@ -1,6 +1,6 @@
-import Events from 'Events.mjs';
+import Events from '../Events.mjs';
 import { BASE_URI } from '../server.mjs';
-const express = require('express');
+import express from 'express';
 const router = express.Router();
 
 function createEventListBody () {
@@ -50,11 +50,11 @@ function createEventBody (id) {
 }
 
 // events
-router.get('/api/events', (request, response) => {
+router.get('/', (request, response) => {
   response.json(createEventListBody());
 });
 
-router.post('/api/events', (request, response) => {
+router.post('/', (request, response) => {
   const newEvent = request.body;
   if (!(newEvent.name && newEvent.start && newEvent.guest_list && newEvent.seating_plan)) {
     response.sendStatus(400);
@@ -66,7 +66,7 @@ router.post('/api/events', (request, response) => {
 });
 
 // event
-router.get('/api/events/:id', (request, response) => {
+router.get('/:id', (request, response) => {
   const id = request.params.id;
   if (!Events.exists(id)) {
     response.sendStatus(404);
@@ -75,7 +75,7 @@ router.get('/api/events/:id', (request, response) => {
   }
 });
 
-router.delete('/api/events/:id', (request, response) => {
+router.delete('/:id', (request, response) => {
   const id = request.params.id;
   if (!Events.exists(id)) {
     response.sendStatus(404);
@@ -85,7 +85,7 @@ router.delete('/api/events/:id', (request, response) => {
   }
 });
 
-router.put('/api/events/:id', (request, response) => {
+router.put('/:id', (request, response) => {
   const id = request.params.id;
   if (!Events.exists(id)) {
     response.sendStatus(404);
@@ -97,4 +97,4 @@ router.put('/api/events/:id', (request, response) => {
   }
 });
 
-module.exports = router;
+export default router;
