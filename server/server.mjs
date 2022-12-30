@@ -1,6 +1,5 @@
 import express from 'express';
 import path from 'path';
-import fetch from 'node-fetch'
 
 import * as bodyParser from 'express';
 
@@ -14,8 +13,6 @@ const host = 'localhost';
 const server = express();
 
 server.use(express.static(path.join(dirname, '../dist/')));
-
-
 
 // grabbing the port from the commandline or setting 8080 as default
 
@@ -45,18 +42,15 @@ server.get('/api/', (request, response) => {
   });
 });
 
-
 server.use('/api/events', eventsRoutes);
 server.use('/api/guests', guestRoutes);
 server.use('/api/tables', tablesRoutes);
-
-
 
 server.get('*', (request, response) => {
   response.sendFile(path.join(dirname, '../dist/index.html'));
 });
 
 // listening for requests
-server.listen(port, host, () => { console.log('Server is running on http://' + host + ':' + port);
-console.log(fetch(BASE_URI))
+server.listen(port, host, () => {
+  console.log('Server is running on http://' + host + ':' + port);
 });
