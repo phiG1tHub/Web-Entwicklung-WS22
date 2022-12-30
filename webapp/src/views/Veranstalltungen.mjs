@@ -10,16 +10,30 @@ export default class extends AbstractView {
   async getHtml () {
     // uikit.showModal();
     return `
-<table class="uk-table">
+<table class="uk-table uk-dark">
     <caption>Veranstaltung</caption>
     <thead>
         <tr>
             <th>Name</th>
+            <th>Datum</th>
+            <th>Aktionen</th>
         </tr>
     </thead>
     <tbody>
         <tr>
-            <td></td>
+            <td>Web-Entwicklung</td>
+            <td>21.12.22</td>
+            <td><button>Delete</button></td>
+        </tr>
+                <tr>
+            <td>Analysis 1</td>
+            <td>21.12.22</td>
+            <td><button>Delete</button></td>
+        </tr>
+                <tr>
+            <td>Programmierparadigmen</td>
+            <td>21.12.22</td>
+            <td><button>Delete</button></td>
         </tr>
     </tbody>
     <tfoot>

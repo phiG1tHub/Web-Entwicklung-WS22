@@ -4,13 +4,13 @@ export default class extends AbstractView {
   constructor (params) {
     super(params);
     this.postId = params.id;
-    this.setTitle('Viewing Post');
+    this.setTitle('Gästeliste');
   }
 
   async getHtml () {
     return `
-            <h1>Post</h1>
-            <p>You are viewing post #${this.postId}.</p>
+            <h1>Gästeliste</h1>
+            <p>Sie sehen sich die Gästeliste #${this.postId}.</p>
         `;
   }
 }

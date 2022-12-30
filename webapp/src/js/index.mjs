@@ -1,7 +1,7 @@
 /* eslint-env browser */
 import Dashboard from '../views/Veranstalltungen.mjs';
-import Posts from '../views/Posts.mjs';
-import PostView from '../views/PostView.mjs';
+import Guests from '../views/Guests.mjs';
+import GuestView from '../views/GuestsView.mjs';
 import Settings from '../views/Settings.mjs';
 
 const pathToRegex = path => new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$');
@@ -23,8 +23,8 @@ const navigateTo = url => {
 const router = async () => {
   const routes = [
     { path: '/', View: Dashboard },
-    { path: '/posts', View: Posts },
-    { path: '/posts/:id', View: PostView },
+    { path: '/guest_lists', View: Guests },
+    { path: '/guest_lists/:id', View: GuestView },
     { path: '/settings', View: Settings }
   ];
 
