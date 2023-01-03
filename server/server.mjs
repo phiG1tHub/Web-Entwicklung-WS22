@@ -2,10 +2,12 @@ import express from 'express';
 import path from 'path';
 
 import * as bodyParser from 'express';
-
+// db imports
 import eventsRoutes from './routes/Events.mjs';
 import guestRoutes from './routes/Guests.mjs';
 import tablesRoutes from './routes/Tables.mjs';
+
+import { connectToDb, getDb } from './db/conn.mjs';
 
 const dirname = path.dirname(process.argv[1]);
 const host = 'localhost';
@@ -51,6 +53,7 @@ server.get('*', (request, response) => {
 });
 
 // listening for requests
+
 server.listen(port, host, () => {
   console.log('Server is running on http://' + host + ':' + port);
 });
