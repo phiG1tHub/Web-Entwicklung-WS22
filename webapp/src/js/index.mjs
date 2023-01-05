@@ -3,6 +3,7 @@ import Dashboard from '../views/Veranstalltungen.mjs';
 import Guests from '../views/Guests.mjs';
 import GuestView from '../views/GuestsView.mjs';
 import Settings from '../views/Settings.mjs';
+import Create from '../views/CreateView.mjs';
 
 const pathToRegex = path => new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$');
 
@@ -25,7 +26,8 @@ const router = async () => {
     { path: '/', View: Dashboard },
     { path: '/guest_lists', View: Guests },
     { path: '/guest_lists/:id', View: GuestView },
-    { path: '/settings', View: Settings }
+    { path: '/settings', View: Settings },
+    { path: '/create', View: Create }
   ];
 
   // Test each route for potential match

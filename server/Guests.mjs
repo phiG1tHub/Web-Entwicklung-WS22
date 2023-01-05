@@ -1,48 +1,28 @@
-const guests = {};
-let nextId = 0;
+import guest from './db/models/Guest.mjs';
 
-function create (name, children, status) {
-  guests[nextId] = ({
-    name: name,
-    children: children,
-    status: status,
-    active: true
-  });
-
-  return nextId++;
+function create () {
+  guest.create();
 }
 
 function getAll () {
-  return Object.keys(guests).filter(id => { return guests[id].active === true; });
+  // todo
+  return null;
 }
 
 function get (id) {
-  if (!exists(id)) {
-    return null;
-  } else {
-    const clone = JSON.parse(JSON.stringify(guests[id]));
-    delete clone.active;
-    return clone;
-  }
+  return guest.findById(id);
 }
 
-function update (id, name, children, status) {
-  if (exists(id)) {
-    const guest = guests[id];
-    guest.name = name;
-    guest.children = children;
-    guest.status = status;
-  }
+function update (id) {
+
 }
 
-function remove (id) {
-  if (exists(id)) {
-    guests[id].active = false;
-  }
+function remove () {
+
 }
 
-function exists (id) {
-  return guests[id] && guests[id].active === true;
+function exists () {
+
 }
 
 export default { create, getAll, get, update, remove, exists };

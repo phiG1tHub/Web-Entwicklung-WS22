@@ -1,10 +1,9 @@
-import { Schema } from 'mongoose';
+import { Schema, model } from 'mongoose';
 
-const guestsSchema = new Schema({
+const guest = new Schema({
   name: { type: String },
   children: { type: Boolean },
   status: { type: String, enum: ['unknown', 'invited', 'confirmed', 'rejected'] }
-
 });
 
-export default guestsSchema;
+export default model('guest', guest);

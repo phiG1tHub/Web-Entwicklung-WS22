@@ -42,6 +42,7 @@ export default class extends AbstractView {
         </tr>
     </tfoot>
 </table>
+<a  href="/create" data-link>button</a>
 `;
   }
 }

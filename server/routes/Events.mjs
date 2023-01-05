@@ -1,16 +1,21 @@
-import Events from '../Events.mjs';
+import * as Events from '../Events.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
 const router = express.Router();
 
-function createEventListBody () {
+async function createEventsBody (arr) {
+  return Promise.all(arr.map(async o => {
+    return {
+      name: (await Events.get(o._id.toString())).name,
+      href: `${BASE_URI}/events/${o._id.toString()}`
+    };
+  }));
+}
+
+async function createEventListBody () {
+  const arr = await Events.getAll();
   return {
-    guests: Events.getAll().map(id => {
-      return {
-        name: Events.get(id).name,
-        href: `${BASE_URI}/events/${id}`
-      };
-    }),
+    events: await createEventsBody(arr),
     _links: {
       self: {
         href: `${BASE_URI}/events`
@@ -23,10 +28,10 @@ function createEventListBody () {
   };
 }
 
-function createEventBody (id) {
-  if (Events.exists(id)) {
+async function createEventBody (id) {
+  if (await Events.exists(id)) {
     return {
-      table: Events.get(id),
+      event: await Events.get(id),
       _links: {
         self: {
           href: `${BASE_URI}/events/${id}`
@@ -50,37 +55,42 @@ function createEventBody (id) {
 }
 
 // events
-router.get('/', (request, response) => {
-  response.json(createEventListBody());
+router.get('/', async (request, response) => {
+  response.json(await createEventListBody());
 });
 
-router.post('/', (request, response) => {
+router.post('/', async (request, response) => {
   const newEvent = request.body;
-  if (!(newEvent.name && newEvent.start && newEvent.guest_list && newEvent.seating_plan)) {
+  // console.log(newEvent)
+  if (!(newEvent.name && newEvent.start && newEvent.guest_list && newEvent.seating_plan && newEvent.tableCount)) {
+    // console.log('here');
     response.sendStatus(400);
   } else {
-    const id = Events.create(newEvent.name, newEvent.start, newEvent.guest_list, newEvent.seating_plan);
+    const id = Events.create(newEvent.name, newEvent.start, newEvent.guest_list, newEvent.seating_plan,
+      newEvent.tableCount);
+    console.log('should have worked');
+    console.log(await createEventBody(id));
     response.location(`${BASE_URI}/events/${id}`).status(201)
       .json(createEventBody(id));
   }
 });
 
 // event
-router.get('/:id', (request, response) => {
+router.get('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Events.exists(id)) {
+  if (!await Events.exists(id)) {
     response.sendStatus(404);
   } else {
-    response.json(createEventBody(id));
+    response.json(await createEventBody(id));
   }
 });
 
-router.delete('/:id', (request, response) => {
+router.delete('/:id', async (request, response) => {
   const id = request.params.id;
   if (!Events.exists(id)) {
     response.sendStatus(404);
   } else {
-    Events.delete(id);
+    await Events.remove(id);
     response.json(createEventListBody());
   }
 });

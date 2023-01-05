@@ -1,13 +1,14 @@
 import express from 'express';
 import path from 'path';
-
 import * as bodyParser from 'express';
+import * as dotenv from 'dotenv';
 // db imports
 import eventsRoutes from './routes/Events.mjs';
 import guestRoutes from './routes/Guests.mjs';
 import tablesRoutes from './routes/Tables.mjs';
-
-import { connectToDb, getDb } from './db/conn.mjs';
+import mongoose from 'mongoose';
+dotenv.config();
+// import { db } from './db/conn.mjs';
 
 const dirname = path.dirname(process.argv[1]);
 const host = 'localhost';
@@ -29,7 +30,6 @@ if (port == null) {
 // setup RESTful HTTP API
 export const BASE_URI = `http://localhost:${port}/api`;
 
-server.use(express.json());
 server.use(bodyParser.json());
 
 // entrypoint
@@ -53,7 +53,14 @@ server.get('*', (request, response) => {
 });
 
 // listening for requests
+mongoose.set('strictQuery', false);
+// mongoose.Promise = global.Promise;
 
-server.listen(port, host, () => {
-  console.log('Server is running on http://' + host + ':' + port);
-});
+async function main () {
+  await mongoose.connect(process.env.DB_URI,
+    () => server.listen(port, host, () => {
+      console.log('Server is running on http://' + host + ':' + port);
+    }));
+}
+
+main().catch(err => console.log(err));
