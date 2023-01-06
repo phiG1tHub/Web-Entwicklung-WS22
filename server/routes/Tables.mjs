@@ -1,16 +1,21 @@
-import Tables from '../Tables.mjs';
+import * as Tables from '../Tables.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
 const router = express.Router();
 
-function createTableListBody () {
+async function createTablesBody (arr) {
+  return Promise.all(arr.map(async o => {
+    return {
+      name: (await Tables.get(o._id.toString())).name,
+      href: `${BASE_URI}/tables/${o._id.toString()}`
+    };
+  }));
+}
+
+async function createTableListBody () {
+  const arr = await Tables.getAll();
   return {
-    tables: Tables.getAll().map(id => {
-      return {
-        name: Tables.get(id).name,
-        href: `${BASE_URI}/tables/${id}`
-      };
-    }),
+    tables: await createTablesBody(arr),
     _links: {
       self: {
         href: `${BASE_URI}/tables`
@@ -23,51 +28,38 @@ function createTableListBody () {
   };
 }
 
-function createTableResponse (id) {
-  return {
-    table: Tables.get(id),
-    _links: {
-      self: {
-        href: `${BASE_URI}/tables/${id}`
-      },
-      update: {
-        method: 'PUT',
-        href: `${BASE_URI}/tables/${id}`
-      },
-      delete: {
-        method: 'DELETE',
-        href: `${BASE_URI}/tables/${id}`
-      },
-      list: {
-        href: `${BASE_URI}/tables`
+async function createTableBody (id) {
+  if (await Tables.exists(id)) {
+    return {
+      table: await Tables.get(id),
+      _links: {
+        self: {
+          href: `${BASE_URI}/tables/${id}`
+        },
+        update: {
+          method: 'PUT',
+          href: `${BASE_URI}/tables/${id}`
+        },
+        delete: {
+          method: 'DELETE',
+          href: `${BASE_URI}/tables/${id}`
+        },
+        list: {
+          href: `${BASE_URI}/tables`
+        }
       }
-    }
-  };
+    };
+  } else {
+    return null;
+  }
 }
 
-// table
-router.get('/:id', (request, response) => {
-  const id = request.params.id;
-  if (!Tables.exists(id)) {
-    response.sendStatus(404);
-  } else {
-    response.json(createTableResponse(id));
-  }
-});
-
-router.put('/:id', (request, response) => {
-  const id = request.params.id;
-  if (!Tables.exists(id)) {
-    response.sendStatus(404);
-  } else {
-    const updatedTable = request.body;
-    Tables.update(id, updatedTable.seat_count, updatedTable.seats, updatedTable.opposite);
-    response.json(createTableResponse(id));
-  }
-});
-
 // tables
-router.post('/', (request, response) => {
+router.get('/', async (request, response) => {
+  response.json(await createTableListBody());
+});
+
+router.post('/', async (request, response) => {
   const newTable = request.body;
   if (!(newTable.seat_count && newTable.seats && newTable.opposite)) {
     response.sendStatus(400);
@@ -78,8 +70,25 @@ router.post('/', (request, response) => {
   }
 });
 
-router.get('/', (request, response) => {
-  response.json(createTableListBody());
+// table
+router.get('/:id', async (request, response) => {
+  const id = request.params.id;
+  if (!Tables.exists(id)) {
+    response.sendStatus(404);
+  } else {
+    response.json(await createTableBody(id));
+  }
+});
+
+router.put('/:id', (request, response) => {
+  const id = request.params.id;
+  if (!Tables.exists(id)) {
+    response.sendStatus(404);
+  } else {
+    const updatedTable = request.body;
+    Tables.update(id, updatedTable.seat_count, updatedTable.seats, updatedTable.opposite);
+    response.json(createTableBody(id));
+  }
 });
 
 export default router;

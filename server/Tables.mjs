@@ -1,48 +1,45 @@
-const tables = {};
-let nextId = 0;
+import table from './db/models/Table.mjs';
+import mongoose from 'mongoose';
 
-function create (seatCount, seats, opposite) {
-  tables[nextId] = ({
-    seatCount: seatCount,
-    seats: seats,
-    opposite: opposite,
-    active: true
-  });
-
-  return nextId++;
+async function create (seatCount, start, opposite, seats) {
+  return document = await table.create({seat_count, start, opposite, seats}).then(
+    table => {
+      return table;
+    }
+  ).catch(error => console.log(error.message));
 }
 
-function getAll () {
-  return Object.keys(tables).filter(id => { return tables[id].active === true; });
-}
-
-function get (id) {
-  if (!exists(id)) {
-    return null;
-  } else {
-    const clone = JSON.parse(JSON.stringify(tables[id]));
-    delete clone.active;
-    return clone;
+async function getAll () {
+  const arr2 = [];
+  for await (const doc of table.find()) {
+    arr2.push(doc);
   }
+  return arr2;
 }
 
-function update (id, seatCount, seats, opposite) {
-  if (exists(id)) {
-    const table = tables[id];
-    table.seatCount = seatCount;
-    table.seats = seats;
-    table.opposite = opposite;
+async function get (id) {
+  let c;
+  for await (const doc of table.findById(id)) {
+    c = doc;
   }
+  return c;
 }
 
-function remove (id) {
-  if (exists(id)) {
-    tables[id].active = false;
-  }
+async function update (id, seatCount, start, opposite, seats) {
+  const doc = await table.findById(id);
+  doc.seatCount = seatCount;
+  doc.start = start;
+  doc.opposite = opposite;
+  doc.seats = seats;
+  await doc.save();
 }
 
-function exists (id) {
-  return tables[id] && tables[id].active === true;
+async function remove (id) {
+  return table.remove(mongoose.Types.ObjectId(id));
+}
+
+async function exists (id) {
+  return table.exists(mongoose.Types.ObjectId(id));
 }
 
 export default { create, getAll, get, update, remove, exists };
