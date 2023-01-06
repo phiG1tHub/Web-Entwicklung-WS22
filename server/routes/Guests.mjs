@@ -1,13 +1,37 @@
-import Guests from '../Guests.mjs';
+import * as Guests from '../Guests.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
-
 const router = express.Router();
 
-function createGuestBody (id) {
-  if (Guests.exists(id)) {
+async function createGuestsBody (arr) {
+  return Promise.all(arr.map(async o => {
     return {
-      table: Guests.get(id),
+      name: (await Guests.get(o._id.toString())).name,
+      href: `${BASE_URI}/guests/${o._id.toString()}`
+    };
+  }));
+}
+
+async function createGuestListBody () {
+  const arr = await Guests.getAll();
+  return {
+    guests: await createGuestsBody(arr),
+    _links: {
+      self: {
+        href: `${BASE_URI}/guests`
+      },
+      create: {
+        method: 'POST',
+        href: `${BASE_URI}/guests`
+      }
+    }
+  };
+}
+
+async function createGuestBody (id) {
+  if (await Guests.exists(id)) {
+    return {
+      table: await Guests.get(id),
       _links: {
         self: {
           href: `${BASE_URI}/guests/${id}`
@@ -30,28 +54,33 @@ function createGuestBody (id) {
   }
 }
 
-function createGuestListBody () {
-  return {
-    guests: Guests.getAll().map(id => {
-      return {
-        name: Guests.get(id).name,
-        href: `${BASE_URI}/guests/${id}`
-      };
-    }),
-    _links: {
-      self: {
-        href: `${BASE_URI}/guests`
-      },
-      create: {
-        method: 'POST',
-        href: `${BASE_URI}/guests`
-      }
-    }
-  };
-}
+// guests
+router.get('/', async (request, response) => {
+  response.json(await createGuestListBody());
+});
+
+router.post('/', async (request, response) => {
+  const newGuest = request.body;
+  if (!(newGuest.name && newGuest.children && newGuest.status)) {
+    response.sendStatus(400);
+  } else {
+    const id = Guests.create(newGuest.name, newGuest.children, newGuest.status);
+    response.location(`${BASE_URI}/guests/${id}`).status(201)
+      .json(createGuestBody(id));
+  }
+});
 
 // guest
-router.put('/:id', (request, response) => {
+router.get('/:id', async (request, response) => {
+  const id = request.params.id;
+  if (!await Guests.exists(id)) {
+    response.sendStatus(404);
+  } else {
+    response.json(await createGuestBody(id));
+  }
+});
+
+router.put('/:id', async (request, response) => {
   const id = request.params.id;
   if (!Guests.exists(id)) {
     response.sendStatus(404);
@@ -63,29 +92,13 @@ router.put('/:id', (request, response) => {
   }
 });
 
-router.delete('/:id', (request, response) => {
+router.delete('/:id', async (request, response) => {
   const id = request.params.id;
   if (!Guests.exists(id)) {
     response.sendStatus(404);
   } else {
     Guests.delete(id);
     response.json(createGuestListBody());
-  }
-});
-
-// guests
-router.get('/', (request, response) => {
-  response.json(createGuestListBody());
-});
-
-router.post('/', (request, response) => {
-  const newGuest = request.body;
-  if (!(newGuest.name && newGuest.children && newGuest.status)) {
-    response.sendStatus(400);
-  } else {
-    const id = Guests.create(newGuest.name, newGuest.children, newGuest.status);
-    response.location(`${BASE_URI}/guests/${id}`).status(201)
-      .json(createGuestBody(id));
   }
 });
 

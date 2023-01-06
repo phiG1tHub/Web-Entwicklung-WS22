@@ -1,8 +1,7 @@
 import { Schema, model } from 'mongoose';
 
 const table = new Schema({
-  seat_count: { type: Number, min: 1 },
-  start: { type: Date, min: Date.now() },
+  seatCount: { type: Number, min: 1 },
   opposite: { type: Boolean },
   seats: { type: [Schema.Types.ObjectId], ref: 'guest' }
 });
