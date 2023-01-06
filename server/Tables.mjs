@@ -1,8 +1,8 @@
 import table from './db/models/Table.mjs';
 import mongoose from 'mongoose';
 
-async function create (seatCount, start, opposite, seats) {
-  return document = await table.create({seat_count, start, opposite, seats}).then(
+async function create (seatCount, opposite, seats) {
+  return document = await table.create({seat_count, opposite, seats}).then(
     table => {
       return table;
     }
@@ -25,10 +25,9 @@ async function get (id) {
   return c;
 }
 
-async function update (id, seatCount, start, opposite, seats) {
+async function update (id, seatCount, opposite, seats) {
   const doc = await table.findById(id);
   doc.seatCount = seatCount;
-  doc.start = start;
   doc.opposite = opposite;
   doc.seats = seats;
   await doc.save();
