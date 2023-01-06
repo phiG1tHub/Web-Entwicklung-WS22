@@ -4,14 +4,25 @@ Single Page Application mit purem js: https://www.youtube.com/watch?v=6BozpmSjk-
 
 MongoDB https://www.youtube.com/watch?v=ExcRbA7fy_A&list=PL4cUxeGkcC9h77dJ-QJlwGlZlTd4ecZOA&ab_channel=TheNetNinja
 
-# TODO
-Swagger IO Api documentation -ready falls api ready ist  
+## installieren
 
-Postman zum API `winget install --id Postman.Postman`
+`winget install --id Postman.Postman`
 
-MongoDB installieren 
+## TODO 
 
 event, events, guest--philipp
 
 guests, table, tables- Daniel
+
+Api testen
+
+svg zeichenen von tisch und in tablele darstellen -philipp
+
+formular für events- daniel 
+
+# Noch nicht ready
+
+Swagger IO Api documentation -ready falls api ready ist  
+
+
 
