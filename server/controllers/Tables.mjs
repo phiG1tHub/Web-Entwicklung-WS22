@@ -1,8 +1,8 @@
-import table from './db/models/Table.mjs';
+import table from '../models/Table.mjs';
 import mongoose from 'mongoose';
 
 async function create (seatCount, opposite, seats) {
-  return document = await table.create({seat_count, opposite, seats}).then(
+  return await table.create({ seatCount, opposite, seats }).then(
     table => {
       return table;
     }
@@ -10,19 +10,19 @@ async function create (seatCount, opposite, seats) {
 }
 
 async function getAll () {
-  const arr2 = [];
+  const documents = [];
   for await (const doc of table.find()) {
-    arr2.push(doc);
+    documents.push(doc);
   }
-  return arr2;
+  return documents;
 }
 
 async function get (id) {
-  let c;
+  let document;
   for await (const doc of table.findById(id)) {
-    c = doc;
+    document = doc;
   }
-  return c;
+  return document;
 }
 
 async function update (id, seatCount, opposite, seats) {
@@ -41,4 +41,4 @@ async function exists (id) {
   return table.exists(mongoose.Types.ObjectId(id));
 }
 
-export default { create, getAll, get, update, remove, exists };
+export { create, getAll, get, update, remove, exists };

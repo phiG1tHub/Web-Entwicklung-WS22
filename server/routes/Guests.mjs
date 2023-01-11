@@ -1,4 +1,4 @@
-import * as Guests from '../Guests.mjs';
+import * as Guests from '../controllers/Guests.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
 const router = express.Router();
@@ -31,7 +31,7 @@ async function createGuestListBody () {
 async function createGuestBody (id) {
   if (await Guests.exists(id)) {
     return {
-      table: await Guests.get(id),
+      guest: await Guests.get(id),
       _links: {
         self: {
           href: `${BASE_URI}/guests/${id}`
@@ -64,9 +64,10 @@ router.post('/', async (request, response) => {
   if (!(newGuest.name && newGuest.children && newGuest.status)) {
     response.sendStatus(400);
   } else {
-    const id = Guests.create(newGuest.name, newGuest.children, newGuest.status);
+    const id = await Guests.create(newGuest.name, newGuest.children, newGuest.status);
+    console.log(id);
     response.location(`${BASE_URI}/guests/${id}`).status(201)
-      .json(createGuestBody(id));
+      .json(await createGuestBody(id));
   }
 });
 
@@ -82,23 +83,31 @@ router.get('/:id', async (request, response) => {
 
 router.put('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Guests.exists(id)) {
+  if (!await Guests.exists(id)) {
     response.sendStatus(404);
   } else {
     const updatedGuest = request.body;
-    Guests.update(id, updatedGuest.name, updatedGuest.children,
-      updatedGuest.status);
-    response.json(createGuestBody(id));
+    try {
+      await Guests.update(id, updatedGuest.name, updatedGuest.children,
+        updatedGuest.status);
+    } catch (err) {
+      response.sendStatus(400);
+    }
+    response.json(await createGuestBody(id));
   }
 });
 
 router.delete('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Guests.exists(id)) {
+  if (!await Guests.exists(id)) {
     response.sendStatus(404);
   } else {
-    Guests.delete(id);
-    response.json(createGuestListBody());
+    try {
+      await Guests.remove(id);
+      response.json(createGuestListBody());
+    } catch (err) {
+      response.sendStatus(404);
+    }
   }
 });
 

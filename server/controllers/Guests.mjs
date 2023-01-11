@@ -1,28 +1,34 @@
-import guest from './db/models/Guest.mjs';
+import guest from '../models/Guest.mjs';
 import mongoose from 'mongoose';
 
 async function create (name, children, status) {
-  return document = await guest.create({name, children, status}).then(
+  const document = await guest.create({ name, children, status }).then(
     guest => {
       return guest;
     }
   ).catch(error => console.log(error.message));
+
+  return document._id.toString();
 }
 
 async function getAll () {
-  const arr2 = [];
+  const documents = [];
   for await (const doc of guest.find()) {
-    arr2.push(doc);
+    documents.push(doc);
   }
-  return arr2;
+  return documents;
 }
 
 async function get (id) {
-  let c;
-  for await (const doc of guest.findById(id)) {
-    c = doc;
+  try {
+    const guestDoc = await guest.findById(mongoose.Types.ObjectId(id));
+    if (!guestDoc) {
+      return 'Guest not found';
+    }
+    return guestDoc;
+  } catch (err) {
+    console.log(err);
   }
-  return c;
 }
 
 async function update (id, name, children, status) {
@@ -41,4 +47,4 @@ async function exists (id) {
   return guest.exists(mongoose.Types.ObjectId(id));
 }
 
-export default { create, getAll, get, update, remove, exists };
+export { create, getAll, get, update, remove, exists };

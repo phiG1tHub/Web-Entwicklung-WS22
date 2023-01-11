@@ -1,4 +1,4 @@
-import * as Events from '../Events.mjs';
+import * as Events from '../controllers/Events.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
 const router = express.Router();
@@ -87,7 +87,7 @@ router.get('/:id', async (request, response) => {
 
 router.delete('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Events.exists(id)) {
+  if (!await Events.exists(id)) {
     response.sendStatus(404);
   } else {
     await Events.remove(id);
@@ -102,7 +102,7 @@ router.put('/:id', (request, response) => {
   } else {
     const updatedEvent = request.body;
     Events.update(id, updatedEvent.name, updatedEvent.start,
-      updatedEvent.guest_list, updatedEvent.seating_plan);
+      updatedEvent.guestList, updatedEvent.seatingPlan);
     response.json(createEventBody(id));
   }
 });

@@ -1,30 +1,29 @@
-import event from './db/models/Event.mjs';
+import event from '../models/Event.mjs';
 import mongoose from 'mongoose';
 
 async function create (name, start, guestList, seatingPlan,
   tableCount) {
-  return document = await event.create({ name, start, guestList, seatingPlan, tableCount }).then(
+  return await event.create({ name, start, guestList, seatingPlan, tableCount }).then(
     event => {
       return event;
     }
   ).catch(error => console.log(error.message));
-
 }
 
 async function getAll () {
-  const arr2 = [];
+  const documents = [];
   for await (const doc of event.find()) {
-    arr2.push(doc);// Prints documents one at a time
+    documents.push(doc);// Prints documents one at a time
   }
-  return arr2;
+  return documents;
 }
 
 async function get (id) {
-  let c;
+  let document;
   for await (const doc of event.findById(id)) {
-    c = doc;
+    document = doc;
   }
-  return c;
+  return document;
 }
 
 async function update (id, name, start,

@@ -1,4 +1,4 @@
-import * as Tables from '../Tables.mjs';
+import * as Tables from '../controllers/Tables.mjs';
 import { BASE_URI } from '../server.mjs';
 import express from 'express';
 const router = express.Router();
@@ -56,38 +56,43 @@ async function createTableBody (id) {
 
 // tables
 router.get('/', async (request, response) => {
+  console.log('here');
   response.json(await createTableListBody());
 });
 
 router.post('/', async (request, response) => {
   const newTable = request.body;
-  if (!(newTable.seat_count && newTable.seats && newTable.opposite)) {
+  if (!(newTable.seatCount && newTable.opposite)) {
     response.sendStatus(400);
   } else {
-    const id = Tables.create(newTable.seat_count, newTable.seats, newTable.opposite);
+    const id = Tables.create(newTable.seatCount, newTable.opposite, newTable.seats);
     response.location(`${BASE_URI}/tables/${id}`).status(201)
-      .json(createTableListBody(id));
+      .json(await createTableListBody(id));
   }
 });
 
 // table
 router.get('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Tables.exists(id)) {
+  if (!await Tables.exists(id)) {
     response.sendStatus(404);
   } else {
     response.json(await createTableBody(id));
   }
 });
 
-router.put('/:id', (request, response) => {
+router.put('/:id', async (request, response) => {
   const id = request.params.id;
-  if (!Tables.exists(id)) {
+  if (!await Tables.exists(id)) {
     response.sendStatus(404);
   } else {
     const updatedTable = request.body;
-    Tables.update(id, updatedTable.seat_count, updatedTable.seats, updatedTable.opposite);
-    response.json(createTableBody(id));
+    try {
+      await Tables.update(id, updatedTable.seatCount, updatedTable.opposite, updatedTable.seats);
+    } catch (err) {
+      console.log(err);
+    }
+    response.json(await createTableBody(id));
   }
 });
 

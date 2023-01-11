@@ -4,6 +4,7 @@ import Guests from '../views/Guests.mjs';
 import GuestView from '../views/GuestsView.mjs';
 import Settings from '../views/Settings.mjs';
 import Create from '../views/CreateView.mjs';
+import Event from '../views/Veranstaltung.mjs';
 
 const pathToRegex = path => new RegExp('^' + path.replace(/\//g, '\\/').replace(/:\w+/g, '(.+)') + '$');
 
@@ -27,7 +28,8 @@ const router = async () => {
     { path: '/guest_lists', View: Guests },
     { path: '/guest_lists/:id', View: GuestView },
     { path: '/settings', View: Settings },
-    { path: '/create', View: Create }
+    { path: '/create', View: Create },
+    { path: '/veranstaltung', View: Event }
   ];
 
   // Test each route for potential match
@@ -50,6 +52,9 @@ const router = async () => {
   const view = new match.route.View(getParams(match));
 
   document.querySelector('#app').innerHTML = await view.getHtml();
+  if (typeof view.createSeatingPlan === 'function') {
+    await view.createSeatingPlan();
+  }
 };
 
 window.addEventListener('popstate', router);

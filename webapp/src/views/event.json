@@ -1,0 +1,25 @@
+{
+  "name": "",
+  "start": "",
+  "guestList": [
+    "Adam",
+    "Bernd"
+  ],
+  "seatingPlan": [
+    {
+      "seatCount": 1,
+      "opposite": true,
+      "seats": 3
+    },
+    {
+      "seatCount": 1,
+      "opposite": true,
+      "seats": 3
+    },
+    {
+      "seatCount": 1,
+      "opposite": true,
+      "seats": 3
+    }
+  ]
+}
